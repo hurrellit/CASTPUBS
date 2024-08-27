@@ -1,0 +1,7 @@
+<!DOCTYPE xml-config SYSTEM "CAST-config_1_0.dtd">
+<xml-config>
+	<mapping-node xpath="./SQL_QUERIES/QUERY" key="./QUERY_NAME" value="./QUERY_STRING" default="./@unknown">
+		<!-- mappping xrefs -->
+		<xref-node xpath="./QUERY_STRING" />
+	</mapping-node>
+</xml-config>

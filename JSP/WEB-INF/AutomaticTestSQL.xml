@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- *************************************************************************************
+	*  This document is used to define SQL queries to be used by an application.             *
+	*                                                                                        *
+	*  Element and Atrribute Definitions                                                     *
+	*       QUERY TYPE ATTRIBUTE - Used to indicate the JDBC statement type to use for this  *
+	*                              query.                                                    *
+	*                              Standard - Uses a java.sql.Statement object               *
+	*                              Prepared - Uses a java.sql.PreparedStatement object       *
+	*                              Callable - Uses a java.sql.CallableStatement (used for    *
+	*                                         calling stored procedures                      *
+	*       QUERY ACTION ATTRIBUTE - Used to indicate the database action which determines   *
+	*                                what method to call on the JDBC statement and the       *
+	*                                return type.                                            *
+	*                                READ  - Calls executeQuery and processes a ResultSet    *
+	*                                WRITE - Calls executeUpdate and returns an int          *
+	*       QUERY_NAME - The name a query is located by in the application.  The value is    *
+	*                    case insensitive                                                    *
+	*       QUERY_STRING - The SQL string to execute. ? characters are used to mark          *
+	*                      variables for the SQL                                             *
+	*       QUERY_VARIABLE - The name of the variable whose value to substitute into the     *
+	*                        query string.  Value is case insensitive.                       *
+	*       QUERY_VARIABLE DATA_TYPE ATTRIBUTE - Used to indicate the SQL data type for the  *
+	*                       query.  Data types are mapped to types defined in java.sql.Types.*
+	*                       This type is used for Prepared and Callable query types.         *
+	*       QUERY_VARIABLE CALL_TYPE ATTRIBUTE - Used to indicate the parameter type for a   *
+	*                       stored procedure call.  Used only for Callable query types.      *
+	*       QUERY_VARIABLE PREFIX/SUFFIX ATTRIBUTE - An optional value to prepend/append to  *
+	*                       to the variable value before placing it in the query.  Used      *
+	*                       typically for wild cards.                                        *
+	*       QUERY_VARIABLE PRECISION ATTRIBUTE - An optional value Used to indicate the      *
+	*                       decimal precision of numeric data types. Used for Prepared query *
+	*                       types.                                                           *
+	************************************************************************************** -->
+<!-- Begin Embedded DTD -->
+<!DOCTYPE SQL_QUERIES [
+<!ELEMENT SQL_QUERIES (QUERY+) >
+<!ELEMENT QUERY (QUERY_NAME,QUERY_STRING,QUERY_DATA?) >
+<!ATTLIST QUERY
+          TYPE    (Standard|Prepared|Callable) #REQUIRED
+          ACTION  (READ|WRITE) "READ"
+>
+<!ELEMENT QUERY_NAME (#PCDATA)>
+<!ELEMENT QUERY_STRING (#PCDATA)>
+<!ELEMENT QUERY_DATA (QUERY_VARIABLE*)>
+<!ELEMENT QUERY_VARIABLE (#PCDATA)>
+<!ATTLIST QUERY_VARIABLE
+          DATA_TYPE   (Long|Date|Double|Float|Int|Short|Char|Varchar|Time|Timestamp) #REQUIRED
+          CALL_TYPE   (IN|OUT|INOUT) "IN"
+          PREFIX      CDATA   #IMPLIED
+          SUFFIX      CDATA   #IMPLIED
+          PRECISION   CDATA   #IMPLIED
+          NULLABLE	  CDATA	  #IMPLIED
+>
+]>
+<!-- End Embedded DTD -->
+<SQL_QUERIES>
+
+	<!-- TABLE AUTM_TEST -->
+	<!-- QUERY INSERT -->
+	<QUERY TYPE="Prepared" ACTION="WRITE">
+		<QUERY_NAME>AUTM_TEST_QUERY_INSERT_AUTM_TEST</QUERY_NAME>
+		<QUERY_STRING>Insert Into AUTHORS (AUID, AU_ALNAME, AU_AFNAME) Values (24334,"toto","jqjp")</QUERY_STRING>
+		<QUERY_DATA>
+			<QUERY_VARIABLE DATA_TYPE="Varchar" CALL_TYPE="IN" NULLABLE="Y">comm</QUERY_VARIABLE>
+			<QUERY_VARIABLE DATA_TYPE="Varchar" CALL_TYPE="IN" NULLABLE="Y">not_relb</QUERY_VARIABLE>
+			<QUERY_VARIABLE DATA_TYPE="Varchar" CALL_TYPE="IN" NULLABLE="Y">non_disc</QUERY_VARIABLE>
+		</QUERY_DATA>
+	</QUERY>
+
+	<!-- QUERY SELECT SEQUENCE -->
+	<QUERY TYPE="Prepared" ACTION="WRITE">
+		<QUERY_NAME>AUTM_TEST_QUERY_SELECT_SEQUENCE_AUTM_TEST</QUERY_NAME>
+		<QUERY_STRING>Values (Prevval For AUTM_TEST_F)</QUERY_STRING>
+		<QUERY_DATA></QUERY_DATA>
+	</QUERY>
+
+	<!-- QUERY UPDATE -->
+	<QUERY TYPE="Prepared" ACTION="WRITE">
+		<QUERY_NAME>AUTM_TEST_QUERY_UPDATE_AUTM_TEST</QUERY_NAME>
+		<QUERY_STRING>Update AUTM_TEST Set COMM = ?, NOT_RELB = ?, NON_DISC = ? Where PK_AUTM_TEST_ID = ?</QUERY_STRING>
+		<QUERY_DATA>
+			<QUERY_VARIABLE DATA_TYPE="Varchar" CALL_TYPE="IN" NULLABLE="Y">comm</QUERY_VARIABLE>
+			<QUERY_VARIABLE DATA_TYPE="Varchar" CALL_TYPE="IN" NULLABLE="Y">not_relb</QUERY_VARIABLE>
+			<QUERY_VARIABLE DATA_TYPE="Varchar" CALL_TYPE="IN" NULLABLE="Y">non_disc</QUERY_VARIABLE>
+			<QUERY_VARIABLE DATA_TYPE="Long" CALL_TYPE="IN">autm_test_id</QUERY_VARIABLE>
+		</QUERY_DATA>
+	</QUERY>
+
+	<!-- QUERY DELETE -->
+	<QUERY TYPE="Prepared" ACTION="WRITE">
+		<QUERY_NAME>AUTM_TEST_QUERY_DELETE_AUTM_TEST</QUERY_NAME>
+		<QUERY_STRING>Delete From AUTM_TEST Where PK_AUTM_TEST_ID = ?</QUERY_STRING>
+		<QUERY_DATA>
+			<QUERY_VARIABLE DATA_TYPE="Long" CALL_TYPE="IN">autm_test_id</QUERY_VARIABLE>
+		</QUERY_DATA>
+	</QUERY>
+
+	<!-- QUERY SELECT -->
+	<QUERY TYPE="Prepared">
+		<QUERY_NAME>AUTM_TEST_QUERY_SELECT_AUTM_TEST_BY_AUTM_TEST_ID</QUERY_NAME>
+		<QUERY_STRING>Select PK_AUTM_TEST_ID, COMM, NOT_RELB, NON_DISC, CASE WHEN ( SELECT COUNT(*) FROM ERROR_CONX T2 WHERE T2.SFK_IMPC_ITEM_FID = T1.PK_AUTM_TEST_ID AND T2.FK_IMPC_TYPE_ID = 'AUTM_TEST' ) = 0 THEN 'N' ELSE 'Y' END AS HAS_ERROR From AUTM_TEST T1 Where PK_AUTM_TEST_ID = ?</QUERY_STRING>
+		<QUERY_DATA>
+			<QUERY_VARIABLE DATA_TYPE="Long" CALL_TYPE="IN">autm_test_id</QUERY_VARIABLE>
+		</QUERY_DATA>
+	</QUERY>
+
+
+	<!-- TABLE AUTM_TEST -->
+	<!-- QUERY INSERT -->
+	<QUERY TYPE="Prepared" ACTION="WRITE">
+		<QUERY_NAME>AUTM_TEST_ITEM_QUERY_INSERT_AUTM_TEST_ITEM</QUERY_NAME>
+		<QUERY_STRING>Insert Into AUTM_TEST_ITEM (PFK_AUTM_TEST_ID, PFK_LOGC_EXPS_ID, SFK_CONX_FID) Values (?, ?, ?)</QUERY_STRING>
+		<QUERY_DATA>
+			<QUERY_VARIABLE DATA_TYPE="Long" CALL_TYPE="IN">autm_test_id</QUERY_VARIABLE>
+			<QUERY_VARIABLE DATA_TYPE="Long" CALL_TYPE="IN">logc_exps_id</QUERY_VARIABLE>
+			<QUERY_VARIABLE DATA_TYPE="Long" CALL_TYPE="IN">conx_fid</QUERY_VARIABLE>
+		</QUERY_DATA>
+	</QUERY>
+
+	<!-- QUERY UPDATE -->
+	<QUERY TYPE="Prepared" ACTION="WRITE">
+		<QUERY_NAME>AUTM_TEST_ITEM_QUERY_UPDATE_AUTM_TEST_ITEM</QUERY_NAME>
+		<QUERY_STRING>Update AUTM_TEST_ITEM Set SFK_CONX_FID = ? Where PFK_AUTM_TEST_ID = ? AND PFK_LOGC_EXPS_ID = ?</QUERY_STRING>
+		<QUERY_DATA>
+			<QUERY_VARIABLE DATA_TYPE="Long" CALL_TYPE="IN">conx_fid</QUERY_VARIABLE>
+			<QUERY_VARIABLE DATA_TYPE="Long" CALL_TYPE="IN">autm_test_id</QUERY_VARIABLE>
+			<QUERY_VARIABLE DATA_TYPE="Long" CALL_TYPE="IN">logc_exps_id</QUERY_VARIABLE>
+		</QUERY_DATA>
+	</QUERY>
+
+	<!-- QUERY DELETE -->
+	<QUERY TYPE="Prepared" ACTION="WRITE">
+		<QUERY_NAME>AUTM_TEST_ITEM_QUERY_DELETE_AUTM_TEST_ITEM</QUERY_NAME>
+		<QUERY_STRING>Delete From AUTM_TEST_ITEM Where PFK_AUTM_TEST_ID = ? And PFK_LOGC_EXPS_ID = ?</QUERY_STRING>
+		<QUERY_DATA>
+			<QUERY_VARIABLE DATA_TYPE="Long" CALL_TYPE="IN">autm_test_id</QUERY_VARIABLE>
+			<QUERY_VARIABLE DATA_TYPE="Long" CALL_TYPE="IN">logc_exps_id</QUERY_VARIABLE>
+		</QUERY_DATA>
+	</QUERY>
+
+	<!-- QUERY DELETE -->
+	<QUERY TYPE="Prepared" ACTION="WRITE">
+		<QUERY_NAME>AUTM_TEST_ITEM_QUERY_DELETE_AUTM_TEST_ITEM_BY_AUTM_TEST_ID</QUERY_NAME>
+		<QUERY_STRING>Delete From AUTM_TEST_ITEM Where PFK_AUTM_TEST_ID = ?</QUERY_STRING>
+		<QUERY_DATA>
+			<QUERY_VARIABLE DATA_TYPE="Long" CALL_TYPE="IN">autm_test_id</QUERY_VARIABLE>
+		</QUERY_DATA>
+	</QUERY>
+
+	<!-- QUERY SELECT -->
+	<QUERY TYPE="Prepared">
+		<QUERY_NAME>AUTM_TEST_ITEM_QUERY_SELECT_AUTM_TEST_ITEM_BY_AUTM_TEST_ID</QUERY_NAME>
+		<QUERY_STRING>Select PFK_AUTM_TEST_ID, PFK_LOGC_EXPS_ID, SFK_CONX_FID From AUTM_TEST_ITEM Where PFK_AUTM_TEST_ID = ?</QUERY_STRING>
+		<QUERY_DATA>
+			<QUERY_VARIABLE DATA_TYPE="Long" CALL_TYPE="IN">autm_test_id</QUERY_VARIABLE>
+		</QUERY_DATA>
+	</QUERY>
+
+	<!-- QUERY SELECT -->
+	<QUERY TYPE="Prepared">
+		<QUERY_NAME>AUTM_TEST_QUERY_SELECT_ALL_LOGC_EXPS_BY_AUTM_TEST_ID</QUERY_NAME>
+		<QUERY_STRING>Select PFK_LOGC_EXPS_ID From AUTM_TEST_ITEM Where PFK_AUTM_TEST_ID = ?</QUERY_STRING>
+		<QUERY_DATA>
+			<QUERY_VARIABLE DATA_TYPE="Long" CALL_TYPE="IN">autm_test_id</QUERY_VARIABLE>
+		</QUERY_DATA>
+	</QUERY>
+
+	<QUERY TYPE="Prepared">
+		<QUERY_NAME>AUTM_TEST_ITEM_QUERY_ERROR_FOR_AUTM_TEST_ITEM</QUERY_NAME>
+		<QUERY_STRING>
+			select distinct case when (select distinct 'found in
+			impacted' from error_conx t2 where t2.sfk_impc_item_fid = ?
+			and t2.fk_impc_type_id = 'AUTM_TEST_ITEM' ) is null then
+			'N' else 'Y' END as has_error from error_conx
+
+		</QUERY_STRING>
+		<QUERY_DATA>
+			<QUERY_VARIABLE DATA_TYPE="Long" CALL_TYPE="IN">autom_test_item_fid</QUERY_VARIABLE>
+		</QUERY_DATA>
+	</QUERY>
+
+</SQL_QUERIES>
+
+

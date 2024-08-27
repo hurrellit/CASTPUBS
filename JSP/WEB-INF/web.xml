@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<web-app>
+ <servlet>
+  <servlet-name>Dispatcher</servlet-name>
+  <servlet-class>com.castsoftware.bookdemo.servlet.BookDemoServletMaster</servlet-class>
+  </servlet>
+ <servlet-mapping>
+  <servlet-name>Dispatcher</servlet-name>
+  <url-pattern>/Dispatcher</url-pattern>
+ </servlet-mapping>
+</web-app>

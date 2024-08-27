@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<ejb-jar>
+   <enterprise-beans>
+      <session>
+         <description>
+            Statless EJB used to create a sale.
+         </description>
+         <ejb-name>Authors</ejb-name>
+         <home>com.castsoftware.bookdemo.ejb.AuthorsHome</home>
+         <remote>com.castsoftware.bookdemo.ejb.Authors</remote>
+         <ejb-class>com.castsoftware.bookdemo.ejb.AuthorsBean</ejb-class>
+         <session-type>Stateless</session-type>
+         <transaction-type>Container</transaction-type>
+      </session>
+   </enterprise-beans>
+</ejb-jar>
